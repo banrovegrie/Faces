@@ -1,160 +1,25 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stdlib.h>
-#include <cmath>
-#include <stdio.h>
-#include <iostream>
-
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 500
-#define ROTATION_SPEED 5
+#include "main.h"
 
 GLfloat rotationX = 0.0f;
 GLfloat rotationY = 0.0f;
 
 /* Draw Stuff */
-void drawCube(GLfloat a)
-{   
-    GLfloat vertices[] = {
-        // front face
-        -a/2, +a/2, +a/2, // top left
-        +a/2, +a/2, +a/2, // top right
-        +a/2, -a/2, +a/2, // bottom right
-        -a/2, -a/2, +a/2, // bottom left
-        
-        // back face
-        -a/2, +a/2, -a/2, // top left
-        +a/2, +a/2, -a/2, // top right
-        +a/2, -a/2, -a/2, // bottom right
-        -a/2, -a/2, -a/2, // bottom left
-        
-        // left face
-        -a/2, +a/2, +a/2, // top left
-        -a/2, +a/2, -a/2, // top right
-        -a/2, -a/2, -a/2, // bottom right
-        -a/2, -a/2, +a/2, // bottom left
-        
-        // right face
-        +a/2, +a/2, +a/2, // top left
-        +a/2, +a/2, -a/2, // top right
-        +a/2, -a/2, -a/2, // bottom right
-        +a/2, -a/2, +a/2, // bottom left
-    };
-
-    GLdouble triangles[] = {
-        // top
-        -a/2, +a/2, +a/2, // top left
-        -a/2, +a/2, -a/2, // top right
-        0.0, (1 + sqrt(2)) * a/2, 0.0,
-        -a/2, +a/2, -a/2, // top right
-        +a/2, +a/2, -a/2, // bottom right
-        0.0, (1 + sqrt(2)) * a/2, 0.0,
-        +a/2, +a/2, -a/2, // bottom right
-        +a/2, +a/2, +a/2, // bottom left
-        0.0, (1 + sqrt(2)) * a/2, 0.0,
-        +a/2, +a/2, +a/2, // bottom left
-        -a/2, +a/2, +a/2, // top left
-        0.0, (1 + sqrt(2)) * a/2, 0.0,
-
-        // down
-        -a/2, -a/2, +a/2, // top left
-        -a/2, -a/2, -a/2, // top right
-        0.0, -(1 + sqrt(2)) * a/2, 0.0,
-        -a/2, -a/2, -a/2, // top right
-        +a/2, -a/2, -a/2, // bottom right
-        0.0, -(1 + sqrt(2)) * a/2, 0.0,
-        +a/2, -a/2, -a/2, // bottom right
-        +a/2, -a/2, +a/2, // bottom left
-        0.0, -(1 + sqrt(2)) * a/2, 0.0,
-        +a/2, -a/2, +a/2, // bottom left
-        -a/2, -a/2, +a/2, // top left
-        0.0, -(1 + sqrt(2)) * a/2, 0.0
-    };
-
-    GLfloat colors1[] = {
-        // front face
-        20, 20, 0,
-        20, 20, 0,
-        20, 20, 0,
-        20, 20, 0,
-        
-        // back face
-        0, 20, 20,
-        0, 20, 20,
-        0, 20, 20,
-        0, 20, 20,        
-        
-        // left face
-        20, 0, 20,
-        20, 0, 20,
-        20, 0, 20,
-        20, 0, 20,  
-        
-        // right face
-        0.80, 0.5, 0,
-        0.80, 0.5, 0,
-        0.80, 0.5, 0,
-        0.80, 0.5, 0, 
-    };
-
-    GLdouble colors2[] = {
-        // top
-        0.7, 0, 0,
-        0.7, 0, 0,
-        0.7, 0, 0,
-        0, 0.7, 0,
-        0, 0.7, 0,
-        0, 0.7, 0,
-        0, 0, 0.7,
-        0, 0, 0.7,
-        0, 0, 0.7,
-        0.2, 0.4, 0.4,
-        0.2, 0.4, 0.4,
-        0.2, 0.4, 0.4,
-
-        // down
-        0.7, 0, 0,
-        0.7, 0, 0,
-        0.7, 0, 0,
-        0, 0.7, 0,
-        0, 0.7, 0,
-        0, 0.7, 0,
-        0, 0, 0.7,
-        0, 0, 0.7,
-        0, 0, 0.7,
-        0.2, 0.4, 0.4,
-        0.2, 0.4, 0.4,
-        0.2, 0.4, 0.4,
-    };
-    
-    /* Cube Part */
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glColorPointer(3, GL_FLOAT, 0, colors1);
-    glDrawArrays(GL_QUADS, 0, 16);
-    
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-
-    /* Pyramids */
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-
-    glVertexPointer(3, GL_DOUBLE, 0, triangles);
-    glColorPointer(3, GL_DOUBLE, 0, colors2);
-    glDrawArrays(GL_TRIANGLES, 0, 24);
-    
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+void draw(int c)
+{
+    switch(c)
+    {
+        case 1:
+            drawElong(300);
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+    }
 }
 
 /* Process Input */
-void keyCallback( GLFWwindow *window, int key, int scancode, int action, int mods )
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     // GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
@@ -182,6 +47,16 @@ void keyCallback( GLFWwindow *window, int key, int scancode, int action, int mod
 
 int main()
 {
+    int choice;
+    std::cout << "Press 1-3 to see which dodecahedron you deserve" << std::endl;
+    std::cin >> choice;
+    
+    if (choice > 3 || choice < 1)
+    {
+        std::cout << "Error in input" << std::endl;
+        return -1;
+    }
+
     /* OpenGL Initialisation */
     glfwInit();
 
@@ -257,7 +132,7 @@ int main()
             glTranslatef(0, 0, 0);
 
             // draw
-            drawCube(300);
+            draw(choice);
         }
         glPopMatrix();
 
