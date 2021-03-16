@@ -2,6 +2,17 @@
 
 GLfloat rotationX = 0.0f;
 GLfloat rotationY = 0.0f;
+GLfloat rotationZ = 0.0f;
+
+GLfloat moveX = 0.0f;
+GLfloat moveY = 0.0f;
+GLfloat moveZ = 0.0f;
+
+GLfloat ZOOM = 1;
+GLfloat Z_SPEED = 0.03;
+
+int spinZ = 0;
+int spinY = 0;
 
 /* Draw Stuff */
 void draw(int c)
@@ -9,11 +20,13 @@ void draw(int c)
     switch(c)
     {
         case 1:
-            drawElong(300);
+            drawElongatedSquareDipyramid(300);
             break;
         case 2:
+            drawHexagonalDipyramid(300);
             break;
         case 3:
+        regularDodecahedron(300);
             break;
     }
 }
@@ -26,18 +39,72 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
     {
         switch (key)
         {
-            case GLFW_KEY_UP:
+            /* For Spins */
+            case GLFW_KEY_Z:
+                rotationX = rotationY = rotationZ = 0;
+                spinZ ^= 1;
+                break;
+            case GLFW_KEY_X:
+                rotationX = rotationY = rotationZ = 0;
+                spinY ^= 1;
+                break;
+
+            /* For Rotations */
+            case GLFW_KEY_W:
                 rotationX -= ROTATION_SPEED;
                 break;
-            case GLFW_KEY_DOWN:
+            case GLFW_KEY_S:
                 rotationX += ROTATION_SPEED;
                 break;
-            case GLFW_KEY_RIGHT:
+            case GLFW_KEY_D:
                 rotationY += ROTATION_SPEED;
                 break;
-            case GLFW_KEY_LEFT:
+            case GLFW_KEY_A:
                 rotationY -= ROTATION_SPEED;
                 break;
+            case GLFW_KEY_E:
+                rotationZ += ROTATION_SPEED;
+                break;
+            case GLFW_KEY_Q:
+                rotationZ -= ROTATION_SPEED;
+                break;
+            
+            /* For Movement */
+            case GLFW_KEY_I:
+                moveY += MOVE_SPEED;
+                break;
+            case GLFW_KEY_K:
+                moveY -= MOVE_SPEED;
+                break;
+            case GLFW_KEY_L:
+                moveX += MOVE_SPEED;
+                break;
+            case GLFW_KEY_J:
+                moveX -= MOVE_SPEED;
+                break;
+            case GLFW_KEY_O:
+                moveZ += MOVE_SPEED;
+                ZOOM += Z_SPEED;
+                break;
+            case GLFW_KEY_U:
+                moveZ -= MOVE_SPEED;
+                ZOOM -= Z_SPEED;
+                break;
+
+            /* Transportation */
+            case GLFW_KEY_C:
+                rotationX = rotationY = rotationZ = 0;
+                break;
+            case GLFW_KEY_V:
+                moveX = moveY = moveZ = 0;
+                break;
+            case GLFW_KEY_B:
+                rotationX = rotationY = rotationZ = 0;
+                moveX = moveY = moveZ = 0;
+                ZOOM = 1;
+                break;
+
+            /* For Escape */
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(window, true);
                 break;
@@ -126,10 +193,22 @@ int main()
         // movements
         glPushMatrix();
         {
-            glTranslatef(0, 0, 0);
-            glRotatef(rotationX, 1, 0, 0);
-            glRotatef(rotationY, 0, 1, 0);
-            glTranslatef(0, 0, 0);
+            if (spinZ)
+                rotationZ += ROTATION_SPEED,
+                glRotatef(rotationZ, 0, 0, 1);
+            else if (spinY) 
+                rotationY += ROTATION_SPEED,
+                glRotatef(rotationY, 0, 1, 0);
+            else
+            {
+                glTranslatef(moveX, 0, 0);
+                glTranslatef(0, moveY, 0);
+                /* glTranslatef(0, 0, moveZ); */
+                glScalef( 1, 1, ZOOM);
+                glRotatef(rotationX, 1, 0, 0);
+                glRotatef(rotationY, 0, 1, 0);
+                glRotatef(rotationZ, 0, 0, 1);
+            }
 
             // draw
             draw(choice);

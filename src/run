@@ -1,3 +1,3 @@
 #!/usr/bin/bash
-g++ main.cpp points.cpp -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGL -lGLU -lglut -lGLEW
+g++ main.cpp points.cpp -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGL -lGLU -lGLEW
 ./a.out
